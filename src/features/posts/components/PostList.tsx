@@ -1,0 +1,63 @@
+import { useCallback, useState } from 'react'
+import { EmptyState } from '@/components/common/EmptyState'
+import { ListStateView } from '@/components/common/ListStateView'
+import { useDebounce } from '@/hooks/useDebounce'
+import { PostCard } from '@/features/posts/components/PostCard'
+import { PostListSkeleton } from '@/features/posts/components/PostListSkeleton'
+import { useFilteredPosts } from '@/features/posts/hooks/useFilteredPosts'
+import { useGetPosts } from '@/features/posts/hooks/useGetPosts'
+
+type PostListProps = {
+  limit?: number
+}
+
+export function PostList({ limit = 12 }: PostListProps) {
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search)
+
+  const { posts, isLoading, isError, error, refetch } = useGetPosts({ limit })
+  const visiblePosts = useFilteredPosts(posts, debouncedSearch)
+
+  // Stable identity so the memoized PostCard does not re-render while typing.
+  const handleSelect = useCallback((postId: number) => {
+    window.alert(`Selected post #${postId}`)
+  }, [])
+
+  return (
+    <section className="post-list">
+      <input
+        type="search"
+        className="post-list__search"
+        placeholder="Search posts…"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        aria-label="Search posts"
+      />
+
+      <ListStateView
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        data={visiblePosts}
+        onRetry={refetch}
+        loading={<PostListSkeleton />}
+        empty={
+          <EmptyState
+            title="No posts found"
+            description={
+              debouncedSearch ? `Nothing matches “${debouncedSearch}”.` : 'Try again later.'
+            }
+          />
+        }
+      >
+        {(items) => (
+          <div className="post-grid">
+            {items.map((post) => (
+              <PostCard key={post.id} post={post} onSelect={handleSelect} />
+            ))}
+          </div>
+        )}
+      </ListStateView>
+    </section>
+  )
+}
