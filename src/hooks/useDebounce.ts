@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SEARCH_DEBOUNCE_MS } from '@/constants/appConfig'
 
-/** Global hook — used by any feature that has a search/filter input (AGENTS.md §6). */
+/** Global hook — used by any feature that has a search/filter input (AGENTS.md §7). */
 export function useDebounce<TValue>(value: TValue, delay: number = SEARCH_DEBOUNCE_MS): TValue {
   const [debounced, setDebounced] = useState(value)
 

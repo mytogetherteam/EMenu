@@ -24,10 +24,10 @@ export function PostList({ limit = 12 }: PostListProps) {
   }, [])
 
   return (
-    <section className="post-list">
+    <section>
       <input
         type="search"
-        className="post-list__search"
+        className="mb-6 w-full max-w-sm rounded-lg border border-line bg-transparent px-3.5 py-2.5 text-sm placeholder:text-fg-muted focus:border-primary-500 focus:outline-none"
         placeholder="Search posts…"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
@@ -51,7 +51,7 @@ export function PostList({ limit = 12 }: PostListProps) {
         }
       >
         {(items) => (
-          <div className="post-grid">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((post) => (
               <PostCard key={post.id} post={post} onSelect={handleSelect} />
             ))}

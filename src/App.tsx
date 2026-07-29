@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import { LoadingState } from '@/components/common/LoadingState'
 import { STALE_TIME_MS } from '@/constants/appConfig'
 
-// Route-level code splitting — one lazy import per page (AGENTS.md §6).
+// Route-level code splitting — one lazy import per page (AGENTS.md §7).
 const Home = lazy(() => import('@/pages/Home'))
 
 const queryClient = new QueryClient({

@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/Button'
 import { cn } from '@/helpers/cn'
 
 type ErrorStateProps = {
@@ -24,13 +25,16 @@ export function ErrorState({
   const message = description ?? resolveMessage(error)
 
   return (
-    <div className={cn('state-view state-view--error', className)} role="alert">
-      <p className="state-view__title">{title}</p>
-      {message ? <p className="state-view__description">{message}</p> : null}
+    <div
+      className={cn('flex flex-col items-center gap-3 px-4 py-12 text-center', className)}
+      role="alert"
+    >
+      <p className="font-semibold">{title}</p>
+      {message ? <p className="max-w-sm text-sm text-fg-muted">{message}</p> : null}
       {onRetry ? (
-        <button type="button" className="state-view__action" onClick={onRetry}>
+        <Button variant="secondary" size="sm" onClick={onRetry}>
           Try again
-        </button>
+        </Button>
       ) : null}
     </div>
   )

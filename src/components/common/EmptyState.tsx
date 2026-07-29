@@ -15,9 +15,9 @@ export function EmptyState({
   className,
 }: EmptyStateProps) {
   return (
-    <div className={cn('state-view state-view--empty', className)}>
-      <p className="state-view__title">{title}</p>
-      {description ? <p className="state-view__description">{description}</p> : null}
+    <div className={cn('flex flex-col items-center gap-3 px-4 py-12 text-center', className)}>
+      <p className="font-semibold">{title}</p>
+      {description ? <p className="max-w-sm text-sm text-fg-muted">{description}</p> : null}
       {action}
     </div>
   )

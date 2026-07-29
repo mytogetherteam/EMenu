@@ -33,7 +33,11 @@ function LazyImageBase({
 
   return (
     <span
-      className={cn('lazy-image', !isLoaded && 'lazy-image--placeholder', wrapperClassName)}
+      className={cn(
+        'block w-full overflow-hidden',
+        !isLoaded && 'animate-pulse bg-white/10',
+        wrapperClassName,
+      )}
       style={{ aspectRatio: `${width} / ${height}` }}
     >
       <img
@@ -44,7 +48,11 @@ function LazyImageBase({
         height={height}
         loading="lazy"
         decoding="async"
-        className={cn('lazy-image__img', isLoaded && 'lazy-image__img--loaded', className)}
+        className={cn(
+          'size-full object-cover opacity-0 transition-opacity duration-200',
+          isLoaded && 'opacity-100',
+          className,
+        )}
         onLoad={() => setIsLoaded(true)}
         onError={() => {
           setHasError(true)

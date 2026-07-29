@@ -1,21 +1,10 @@
-type ClassValue = string | number | null | undefined | false | ClassValue[]
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 /**
- * Merge conditional class names into a single string.
- * Swap the body for `twMerge(clsx(inputs))` if Tailwind is added to the project.
+ * Merge conditional Tailwind classes — later classes win over earlier ones
+ * in the same utility group (AGENTS.md §4).
  */
 export function cn(...inputs: ClassValue[]): string {
-  const out: string[] = []
-
-  for (const input of inputs) {
-    if (!input && input !== 0) continue
-    if (Array.isArray(input)) {
-      const nested = cn(...input)
-      if (nested) out.push(nested)
-    } else {
-      out.push(String(input))
-    }
-  }
-
-  return out.join(' ')
+  return twMerge(clsx(inputs))
 }

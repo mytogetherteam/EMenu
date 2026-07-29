@@ -22,7 +22,10 @@ and it overrides your defaults. Do not restate it back to the user — apply it.
    `{ data, isLoading, isError, error, refetch }`.
 4. **Clean helpers** — pure, named exports. Formatting via `helpers/formatters.ts`, classes via `cn()`.
 5. **Declarative UI** — loading/error/empty always through `<ListStateView>`. Ternary state chains are banned.
-6. **Performance** — `<LazyImage>` for all remote images, `memo`/`useCallback` on list rows,
+6. **Styling** — Tailwind v4 utilities only, theme tokens from the `@theme` block in `src/index.css`
+   (`bg-brand-gradient`, `primary-*`, `surface`, `surface-raised`, `line`, `fg`, `fg-muted`).
+   No raw hex, no arbitrary values, no new `.css` files. Buttons come from `components/ui/Button.tsx`.
+7. **Performance** — `<LazyImage>` for all remote images, `memo`/`useCallback` on list rows,
    stable entity keys, `React.lazy` per page, debounced filter inputs.
 
 ## How to work
@@ -31,4 +34,4 @@ and it overrides your defaults. Do not restate it back to the user — apply it.
   applied in one line and continue.
 - When refactoring, fix violations you touch — do not rewrite unrelated files.
 - When reviewing, report violations as `file:line` + the specific rule number from AGENTS.md, ranked by severity.
-- Finish with the §8 Definition of Done self-check from AGENTS.md before declaring the task complete.
+- Finish with the §9 Definition of Done self-check from AGENTS.md before declaring the task complete.

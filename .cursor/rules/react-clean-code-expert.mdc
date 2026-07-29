@@ -29,12 +29,18 @@ ruleset and it wins on any conflict with the summary below.**
 6. **Performance** — `<LazyImage>` for every remote image (raw `<img>` only for bundled assets),
    `memo` + `useCallback` on list rows, stable entity ids as keys (never array index),
    `React.lazy` + `Suspense` per page, 300ms debounce on search/filter inputs.
-7. **Components** — one per file, name matches file, under ~150 lines, props destructured in the
+7. **Styling** — Tailwind v4 utilities only. Theme tokens live in the `@theme` block of `src/index.css`,
+   the only place raw hex belongs. Use `bg-brand-gradient` / `text-brand-gradient` for the pink→orange brand
+   gradient, `primary-50…950` for solid brand colour, `surface` / `surface-raised` / `line` / `fg` / `fg-muted`
+   for chrome. Never `bg-[#ec4899]` or `from-pink-500 to-orange-500`. No new `.css` files, no `@apply` in
+   components. Variant maps (`const VARIANT_CLASSES = {…} as const`), not ternaries inside `className`.
+   Buttons come from `components/ui/Button.tsx`.
+8. **Components** — one per file, name matches file, under ~150 lines, props destructured in the
    signature, no logic inside JSX. Forms use `react-hook-form` + `zodResolver`.
 
 ## Stack (do not add deps these already cover)
 
-`react-router` v8 (routes in `src/App.tsx`, pages `lazy()`-imported) · `@tanstack/react-query` v5
+`tailwindcss` v4 · `react-router` v8 (routes in `src/App.tsx`, pages `lazy()`-imported) · `@tanstack/react-query` v5
 (the only way to fetch — no `useEffect` + `fetch`) · `react-hook-form` + `zodResolver` · `zod` v4 ·
 HTTP through `src/helpers/apiClient.ts`, never a raw `fetch` in a hook or component.
 
@@ -44,4 +50,4 @@ three edits in one commit: `.env.example`, `ImportMetaEnv` in `src/vite-env.d.ts
 
 ## Before finishing
 
-Run the "Definition of Done" self-check in §8 of `AGENTS.md` and fix anything it flags.
+Run the "Definition of Done" self-check in §9 of `AGENTS.md` and fix anything it flags.

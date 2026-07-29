@@ -13,6 +13,7 @@ rules and patterns below.
 
 | Concern | Library | Rule |
 | --- | --- | --- |
+| Styling | `tailwindcss` v4 | Utilities only. No `.css` files besides `src/index.css`, no inline `style` except dynamic values. |
 | Routing | `react-router` v8 | Routes declared in `src/App.tsx`, each page `lazy()`-imported from `src/pages/`. |
 | Server state | `@tanstack/react-query` v5 | The **only** way to fetch. No `useEffect` + `fetch` in components. |
 | Forms | `react-hook-form` + `@hookform/resolvers` | Always with `zodResolver`. No per-field `useState`. |
@@ -187,7 +188,31 @@ Rules:
 
 ---
 
-## 6. Performance — `LazyImage` and rendering discipline
+## 6. Styling — Tailwind v4 + design tokens
+
+All styling is Tailwind utilities. The theme lives in the `@theme` block of `src/index.css` and is the
+only place raw hex values may appear.
+
+| Token | Use for |
+| --- | --- |
+| `bg-brand-gradient` | Primary CTA background — the pink→orange brand gradient. **Never hand-write the stops.** |
+| `text-brand-gradient` | Gradient headline text. |
+| `primary-50 … primary-950` | Solid brand colour: focus rings, links, active borders, icons. `primary-500` is the default. |
+| `surface` / `surface-raised` | Page background / cards, inputs, raised panels. |
+| `line` | Every border. |
+| `fg` / `fg-muted` | Primary text / secondary text. |
+
+Rules:
+- ❌ Arbitrary values for brand colours — `bg-[#ec4899]`, `from-pink-500 to-orange-500`. Use the tokens.
+- ❌ New `.css` files, CSS modules, `@apply` in components, or `styled-components`.
+- Conditional classes go through `cn()` (clsx + tailwind-merge), so a `className` prop passed from a
+  parent always wins over the component's defaults.
+- Variant maps (`const VARIANT_CLASSES = {…} as const`) instead of ternary chains inside `className` —
+  see `src/components/ui/Button.tsx`.
+- Buttons are `<Button>` from `components/ui/`, never a raw `<button>` with utility classes copy-pasted.
+- Mobile-first: unprefixed classes are the small-screen case, then `sm:` / `md:` / `lg:`.
+
+## 7. Performance — `LazyImage` and rendering discipline
 
 - Every remote/user-uploaded image renders through `<LazyImage>` (native `loading="lazy"`,
   explicit `width`/`height` or aspect ratio to prevent CLS, blur/skeleton placeholder, error fallback).
@@ -201,7 +226,7 @@ Rules:
 
 ---
 
-## 7. Component Rules
+## 8. Component Rules
 
 - One component per file; the file name matches the component name.
 - Keep a component under ~150 lines. Past that, extract sub-components into the same feature folder.
@@ -212,14 +237,15 @@ Rules:
 
 ---
 
-## 8. Definition of Done — self-check before finishing any change
+## 9. Definition of Done — self-check before finishing any change
 
 1. Did every new file land in the correct folder per §1 (feature-local unless shared)?
 2. Any cross-feature import? Any `../../../` path?
 3. Any `any`, `React.FC`, or `!` assertion introduced?
 4. Is fetching/business logic inside a component instead of a hook?
 5. Is any loading/error/empty branching hand-rolled instead of `ListStateView`?
-6. Is any remote image using raw `<img>` instead of `LazyImage`?
-7. Is formatting inline instead of going through `helpers/formatters.ts`?
+6. Any hard-coded colour or arbitrary Tailwind value instead of a theme token (§6)?
+7. Is any remote image using raw `<img>` instead of `LazyImage`?
+8. Is formatting inline instead of going through `helpers/formatters.ts`?
 
 Any "yes" (or "no" for #1) → fix it before reporting the task complete.
