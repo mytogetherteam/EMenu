@@ -1,36 +1,54 @@
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { apiRequest } from '@/helpers/apiClient'
 import { menuItemListResponseSchema } from '@/features/menu-items/schemas/menuItemSchema'
 import type { MenuItem } from '@/features/menu-items/types/menuItem'
 import { menuItemKeys } from '@/features/menu-items/utils/menuItemKeys'
 
-/** API caps size at 100 — enough for a single-shop public menu view. */
-const SHOP_MENU_PAGE_SIZE = 100
+type MenuItemPage = {
+  content: MenuItem[]
+  totalElements: number
+  totalPages: number
+  page: number
+  size: number
+}
+
+const SHOP_MENU_PAGE_SIZE = 20
 
 async function fetchShopMenuItems(
   shopId: number,
+  page: number,
   signal: AbortSignal,
-): Promise<MenuItem[]> {
+): Promise<MenuItemPage> {
   const response = await apiRequest('/user/menu-items', menuItemListResponseSchema, {
-    params: { shopId, page: 1, size: SHOP_MENU_PAGE_SIZE },
+    params: { shopId, page, size: SHOP_MENU_PAGE_SIZE },
     signal,
   })
-  return response.data.content
+  return response.data
 }
 
-/** Published menu items for one shop — view only (no cart/order). */
+/** Published menu items for one shop — infinite scroll, view only. */
 export function useGetShopMenuItems(shopId: number | undefined) {
-  const query = useQuery<MenuItem[]>({
+  const query = useInfiniteQuery<MenuItemPage>({
     queryKey: menuItemKeys.byShop(shopId ?? 0),
-    queryFn: ({ signal }) => fetchShopMenuItems(shopId!, signal),
+    queryFn: ({ pageParam, signal }) =>
+      fetchShopMenuItems(shopId!, Number(pageParam ?? 1), signal),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
     enabled: shopId != null && shopId > 0,
   })
 
+  const data = query.data?.pages.flatMap((page) => page.content) ?? []
+
   return {
-    data: query.data,
+    data,
+    totalElements: query.data?.pages[0]?.totalElements ?? 0,
     isLoading: query.isLoading,
     isError: query.isError,
     error: query.error,
     refetch: query.refetch,
+    hasNextPage: query.hasNextPage,
+    fetchNextPage: query.fetchNextPage,
+    isFetchingNextPage: query.isFetchingNextPage,
   }
 }
