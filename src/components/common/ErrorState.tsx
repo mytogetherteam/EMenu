@@ -47,8 +47,8 @@ export function ErrorState({
           className="mb-2 w-full max-w-xs rounded-2xl object-cover shadow-lg sm:max-w-sm md:max-w-md"
         />
       ) : null}
-      <p className="text-lg font-semibold text-fg">{title}</p>
-      {message ? <p className="max-w-sm text-sm text-fg-muted">{message}</p> : null}
+      <p className="text-lg font-semibold">{title}</p>
+      {message ? <p className="max-w-sm text-sm opacity-70">{message}</p> : null}
       {onRetry ? (
         <Button variant="secondary" size="sm" className="mt-2" onClick={onRetry}>
           Try again

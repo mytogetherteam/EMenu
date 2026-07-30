@@ -42,12 +42,12 @@
 
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
-    background-color: var(--color-surface);
-    color: var(--color-fg);
+    background-color: #ffffff;
+    color: #18181b;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }

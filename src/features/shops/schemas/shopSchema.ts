@@ -34,6 +34,15 @@ export const shopSchema = z
     ratingCount: z.number().optional(),
     isFavorite: z.boolean().optional(),
     operatingHours: z.array(operatingHourSchema).optional(),
+    shopCategory: z
+      .object({
+        id: z.number().optional(),
+        nameEn: z.string().optional(),
+        nameMm: z.string().nullable().optional(),
+      })
+      .passthrough()
+      .nullable()
+      .optional(),
   })
   .passthrough()
 

@@ -1,66 +1,57 @@
 import { memo } from 'react'
 import { LazyImage } from '@/components/common/LazyImage'
 import { formatCurrency } from '@/helpers/formatters'
+import { cn } from '@/helpers/cn'
 import type { MenuItem } from '@/features/menu-items/types/menuItem'
 
 type MenuItemCardProps = {
   item: MenuItem
+  /** When the shop is closed for today — all items show Closed badge. */
+  shopClosed?: boolean
 }
 
-function MenuItemCardBase({ item }: MenuItemCardProps) {
+function MenuItemCardBase({ item, shopClosed = false }: MenuItemCardProps) {
   const title = item.nameEn || item.nameMm || item.nameTh || `Item #${item.id}`
-  const description = item.descriptionEn || item.descriptionMm || null
-  const category = item.menuCategoryName || item.categoryName || null
   const price = item.price ?? item.originalPrice ?? null
-  const showOriginal =
-    item.originalPrice != null &&
-    item.price != null &&
-    item.originalPrice > item.price
+  const itemUnavailable = item.isAvailable === false
+  const showOverlay = shopClosed || itemUnavailable
+  const badgeLabel = shopClosed ? 'Closed' : itemUnavailable ? 'Unavailable' : null
 
   return (
-    <article className="flex min-w-0 flex-col gap-1.5 sm:gap-2">
-      {item.imageUrl ? (
-        <LazyImage
-          src={item.imageUrl}
-          alt={title}
-          width={400}
-          height={400}
-          className="size-full rounded-xl object-cover sm:rounded-2xl"
-          wrapperClassName="aspect-square w-full overflow-hidden rounded-xl sm:rounded-2xl"
-        />
-      ) : (
-        <div className="flex aspect-square w-full items-center justify-center rounded-xl bg-surface text-xs text-fg-muted ring-1 ring-line sm:rounded-2xl sm:text-sm">
-          No photo
-        </div>
-      )}
+    <article className="flex min-w-0 flex-col gap-2">
+      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100">
+        {item.imageUrl ? (
+          <LazyImage
+            src={item.imageUrl}
+            alt={title}
+            width={400}
+            height={400}
+            className={cn('size-full object-cover', showOverlay && 'opacity-50')}
+            wrapperClassName="size-full"
+          />
+        ) : (
+          <div className="flex size-full items-center justify-center text-xs text-zinc-400">
+            No photo
+          </div>
+        )}
 
-      <div className="min-w-0 space-y-0.5 px-0.5 sm:space-y-1">
-        {category ? (
-          <p className="truncate text-[11px] font-medium text-fg-muted sm:text-xs">
-            {category}
-          </p>
+        {badgeLabel ? (
+          <>
+            <div className="absolute inset-0 bg-white/45" aria-hidden="true" />
+            <span className="absolute bottom-2 left-2 rounded-md bg-primary-600 px-2.5 py-1 text-[11px] font-semibold text-white sm:text-xs">
+              {badgeLabel}
+            </span>
+          </>
         ) : null}
-        <h3 className="line-clamp-2 text-xs font-semibold text-fg sm:text-sm">
+      </div>
+
+      <div className="min-w-0 space-y-0.5 px-0.5">
+        <h3 className="line-clamp-2 text-xs font-semibold text-zinc-900 sm:text-sm">
           {title}
         </h3>
-        {item.nameMm && item.nameEn && item.nameMm !== item.nameEn ? (
-          <p className="hidden truncate text-xs text-fg-muted sm:block">
-            {item.nameMm}
-          </p>
-        ) : null}
-        {description ? (
-          <p className="hidden line-clamp-2 text-sm text-fg-muted md:block">
-            {description}
-          </p>
-        ) : null}
         {price != null ? (
-          <p className="pt-0.5 text-xs font-semibold text-fg sm:text-sm">
+          <p className="text-xs font-medium text-primary-600 sm:text-sm">
             {formatCurrency(price)}
-            {showOriginal && item.originalPrice != null ? (
-              <span className="ml-1 text-[11px] font-normal text-fg-muted line-through sm:ml-1.5 sm:text-xs">
-                {formatCurrency(item.originalPrice)}
-              </span>
-            ) : null}
           </p>
         ) : null}
       </div>

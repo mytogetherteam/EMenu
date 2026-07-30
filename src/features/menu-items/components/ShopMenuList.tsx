@@ -8,14 +8,14 @@ import type { MenuItem } from '@/features/menu-items/types/menuItem'
 
 type ShopMenuListProps = {
   shopId: number
+  shopClosed?: boolean
 }
 
-/** View-only menu list for a public shop page (no order / cart actions). */
-export function ShopMenuList({ shopId }: ShopMenuListProps) {
+/** View-only everyday menu — infinite scroll. */
+export function ShopMenuList({ shopId, shopClosed = false }: ShopMenuListProps) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
   const {
     data,
-    totalElements,
     isLoading,
     isError,
     error,
@@ -44,15 +44,6 @@ export function ShopMenuList({ shopId }: ShopMenuListProps) {
 
   return (
     <section className="mt-6 space-y-4 sm:mt-8">
-      <div className="flex items-end justify-between gap-3">
-        <h2 className="text-lg font-bold text-fg sm:text-xl">Menu</h2>
-        {totalElements > 0 ? (
-          <p className="text-xs text-fg-muted sm:text-sm">
-            {data.length} / {totalElements}
-          </p>
-        ) : null}
-      </div>
-
       <ListStateView<MenuItem>
         isLoading={isLoading}
         isError={isError}
@@ -73,7 +64,7 @@ export function ShopMenuList({ shopId }: ShopMenuListProps) {
           <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 lg:gap-5">
               {items.map((item) => (
-                <MenuItemCard key={item.id} item={item} />
+                <MenuItemCard key={item.id} item={item} shopClosed={shopClosed} />
               ))}
             </div>
 
