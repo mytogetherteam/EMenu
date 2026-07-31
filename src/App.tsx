@@ -7,6 +7,7 @@ import { STALE_TIME_MS } from '@/constants/appConfig'
 
 // Route-level code splitting — one lazy import per page (AGENTS.md §7).
 const Home = lazy(() => import('@/pages/Home'))
+const ShopPage = lazy(() => import('@/pages/ShopPage'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +26,7 @@ export default function App() {
         <Suspense fallback={<LoadingState />}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/:slug" element={<ShopPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

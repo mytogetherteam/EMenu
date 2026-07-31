@@ -5,18 +5,26 @@ type LoadingStateProps = {
   className?: string
 }
 
+/** Full-viewport centered loader — white background + `/loading.gif`. */
 export function LoadingState({ label = 'Loading…', className }: LoadingStateProps) {
   return (
     <div
-      className={cn('flex flex-col items-center gap-3 px-4 py-12 text-center', className)}
+      className={cn(
+        'flex min-h-screen flex-col items-center justify-center gap-4 bg-white px-4 text-center text-zinc-900',
+        className,
+      )}
       role="status"
       aria-live="polite"
     >
-      <span
-        className="size-6 animate-spin rounded-full border-2 border-line border-t-primary-500"
+      <img
+        src="/loading.gif"
+        alt=""
+        width={120}
+        height={120}
+        className="size-28 object-contain"
         aria-hidden="true"
       />
-      <p className="text-sm text-fg-muted">{label}</p>
+      <p className="text-sm text-zinc-600">{label}</p>
     </div>
   )
 }
